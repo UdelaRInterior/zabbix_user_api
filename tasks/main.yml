@@ -1,2 +1,50 @@
 ---
 # tasks file for zabbix_user_api
+
+- name: "Install zabbix-api on remote host"
+  pip:
+    name: zabbix-api
+    state: present
+
+- name: "Create Zabbix API user"
+  zabbix_user:
+    server_url: "{{ zabbix_url }}"
+    login_user: "{{ zabbix_default_Admin_user }}"
+    login_password: "{{ zabbix_default_Admin_pass }}"
+    alias: "{{ zabbix_api_user }}"
+    name: "Zabbix"
+    surname: "API"
+    passwd: "{{ zabbix_api_pass }}"
+    type: Zabbix super admin
+    usrgrps:
+          - "Zabbix administrators"
+  when:
+    - zabbix_create_api_user | bool
+    - zabbix_use_Admin_default_pass | bool
+
+- name: "Disable default Zabbix Admin user"
+  zabbix_user:
+    server_url: "{{ zabbix_url }}"
+    login_user: "{{ zabbix_api_user }}"
+    login_password: "{{ zabbix_api_pass }}"
+    alias: "{{ zabbix_default_Admin_user }}"
+    usrgrps:
+      - "Zabbix administrators"
+      - "Disabled"
+  when:
+    - zabbix_disable_Admin_user | bool
+
+- name: "Update Zabbix API user"
+  zabbix_user:
+    server_url: "{{ zabbix_url }}"
+    login_user: "{{ zabbix_default_Admin_user }}"
+    login_password: "{{ zabbix_default_Admin_pass }}"
+    alias: "{{ zabbix_api_user }}"
+    name: "Zabbix"
+    surname: "API"
+    passwd: "123456"
+    override_passwd: yes
+    type: Zabbix super admin
+    state: present
+    usrgrps:
+          - "Zabbix administrators"
