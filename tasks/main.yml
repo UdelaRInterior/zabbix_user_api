@@ -28,23 +28,9 @@
     login_user: "{{ zabbix_api_user }}"
     login_password: "{{ zabbix_api_pass }}"
     alias: "{{ zabbix_default_Admin_user }}"
+    passwd: "{{ zabbix_default_Admin_pass }}"
     usrgrps:
       - "Zabbix administrators"
       - "Disabled"
   when:
     - zabbix_disable_Admin_user | bool
-
-- name: "Update Zabbix API user"
-  zabbix_user:
-    server_url: "{{ zabbix_url }}"
-    login_user: "{{ zabbix_default_Admin_user }}"
-    login_password: "{{ zabbix_default_Admin_pass }}"
-    alias: "{{ zabbix_api_user }}"
-    name: "Zabbix"
-    surname: "API"
-    passwd: "123456"
-    override_passwd: yes
-    type: Zabbix super admin
-    state: present
-    usrgrps:
-          - "Zabbix administrators"
