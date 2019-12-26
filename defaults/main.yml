@@ -1,17 +1,22 @@
 ---
 # defaults file for zabbix_user_api
 
+zabbix_user_api_server_url: "https://zabbix-server.local"
+
 # Zabbix server default credentials
-zabbix_default_Admin_user: Admin
-zabbix_default_Admin_pass: zabbix
+zabbix_user_api_default_Admin_user: Admin
+zabbix_user_api_default_Admin_pass: zabbix
 
 # Set true to disable Admin user and create custom api user
-zabbix_create_api_user: False
-zabbix_api_user: zabbix_api
-zabbix_api_pass: zabbix_api
+zabbix_user_api_create_api_user: False
+zabbix_user_api_api_user: zabbix_api
+zabbix_user_api_api_pass: zabbix_api
 
 # Set true to use default Admin credentials
-zabbix_use_Admin_default_pass: False
+zabbix_user_api_use_Admin_default_pass: False
 
 # Set true to disable Admin user
-zabbix_disable_Admin_user: False
+zabbix_user_api_disable_Admin_user: False
+
+# Set true to become on localhost
+zabbix_user_api_become_on_localhost: False
