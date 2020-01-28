@@ -1,14 +1,14 @@
 ---
 # tasks file for zabbix_user_api
 
-- name: "Install zabbix-api on localhost"
+- name: Install zabbix-api on localhost
   pip:
     name: zabbix-api
     state: present
   delegate_to: localhost
   become: "{{ zabbix_user_api_become_on_localhost }}"
 
-- name: "Create Zabbix API user"
+- name: Create custom Zabbix API user
   zabbix_user:
     server_url: "{{ zabbix_user_api_server_url }}"
     login_user: "{{ zabbix_user_api_default_Admin_user }}"
@@ -27,7 +27,7 @@
     - zabbix_user_api_create_api_user | bool
     - zabbix_user_api_use_Admin_default_pass | bool
 
-- name: "Disable default Zabbix Admin user"
+- name: Disable default Zabbix Admin user
   zabbix_user:
     server_url: "{{ zabbix_user_api_server_url }}"
     login_user: "{{ zabbix_user_api_api_user }}"
