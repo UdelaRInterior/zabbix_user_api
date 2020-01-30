@@ -1,44 +1,66 @@
 ---
-# tasks file for zabbix_user_api
+# tasks file for zabbix_users
 
-- name: Install zabbix-api on localhost
+- name: Ensure zabbix-api is installed on localhost
+  become: "{{ zabbix_users_become_on_localhost }}"
+  delegate_to: localhost
   pip:
     name: zabbix-api
     state: present
-  delegate_to: localhost
-  become: "{{ zabbix_user_api_become_on_localhost }}"
 
-- name: Create custom Zabbix API user
-  zabbix_user:
-    server_url: "{{ zabbix_user_api_server_url }}"
-    login_user: "{{ zabbix_user_api_default_Admin_user }}"
-    login_password: "{{ zabbix_user_api_default_Admin_pass }}"
-    alias: "{{ zabbix_user_api_api_user }}"
-    name: "Zabbix"
-    surname: "API"
-    passwd: "{{ zabbix_user_api_api_pass }}"
-    type: Zabbix super admin
-    usrgrps:
-          - "Zabbix administrators"
-    state: present
+- name: Try to  disable default Zabbix Super Admin (If another one was given)
+  become: false
   delegate_to: localhost
-  become: "{{ zabbix_user_api_become_on_localhost }}"
-  when:
-    - zabbix_user_api_create_api_user | bool
-    - zabbix_user_api_use_Admin_default_pass | bool
-
-- name: Disable default Zabbix Admin user
+  ignore_errors: true
   zabbix_user:
-    server_url: "{{ zabbix_user_api_server_url }}"
-    login_user: "{{ zabbix_user_api_api_user }}"
-    login_password: "{{ zabbix_user_api_api_pass }}"
-    alias: "{{ zabbix_user_api_default_Admin_user }}"
-    passwd: "{{ zabbix_user_api_default_Admin_pass }}"
+    server_url: "{{ zabbix_users_server_url }}"
+    login_user: "{{ zabbix_users_custom_Admin_user }}"
+    login_password: "{{ zabbix_users_custom_Admin_pass }}"
+    alias: "{{ zabbix_users_default_Admin_user }}"
+    passwd: "{{ zabbix_users_default_Admin_pass }}"
     type: Zabbix super admin
     usrgrps:
       - "Zabbix administrators"
       - "Disabled"
-  delegate_to: localhost
-  become: "{{ zabbix_user_api_become_on_localhost }}"
   when:
-    - zabbix_user_api_disable_Admin_user | bool
+    - zabbix_users_disable_default_Admin_user | bool
+    - zabbix_users_custom_Admin_user is defined
+    - zabbix_users_custom_Admin_pass is defined
+  register: disable_default_admin
+
+- name: Create custom Zabbix users
+  become: false
+  delegate_to: localhost
+  zabbix_user:
+    server_url: "{{ zabbix_users_server_url }}"
+    login_user: "{{ zabbix_users_default_Admin_user if((disable_default_admin.failed is defined and disable_default_admin.failed) or zabbix_users_custom_Admin_pass is not defined) else zabbix_users_custom_Admin_user }}"
+    login_password:  "{{ zabbix_users_default_Admin_pass if((disable_default_admin.failed is defined and disable_default_admin.failed) or zabbix_users_custom_Admin_pass is not defined) else zabbix_users_custom_Admin_pass }}"
+    name: "{{ item.name | default(omit) }}"
+    surname: "{{ item.surname | default(omit) }}"
+    alias: "{{ item.alias }}"
+    passwd: "{{ item.passwd }}"
+    usrgrps: "{{ item.usrgrps }}"
+    type: "{{ item.type | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    override_passwd: "{{ item.override_passwd | default(omit) }}"
+    lang: "{{ item.lang | default(omit) }}"
+    theme: "{{ item.theme | default(omit) }}"
+  with_items: "{{ zabbix_users_list }}"
+
+- name: Try disable default Zabbix Super Admin (After create custom users)
+  become: false
+  delegate_to: localhost
+  ignore_errors: true
+  zabbix_user:
+    server_url: "{{ zabbix_users_server_url }}"
+    login_user: "{{ zabbix_users_custom_Admin_user }}"
+    login_password: "{{ zabbix_users_custom_Admin_pass }}"
+    alias: "{{ zabbix_users_default_Admin_user }}"
+    passwd: "{{ zabbix_users_default_Admin_pass }}"
+    type: Zabbix super admin
+    usrgrps:
+      - "Zabbix administrators"
+      - "Disabled"
+  when:
+    - zabbix_users_disable_default_Admin_user | bool
+    - disable_default_admin.failed is defined and disable_default_admin.failed
