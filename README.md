@@ -2,7 +2,7 @@ Ansible role zabbix_user_api
 =========
 
 Proof of concept. Thought as an independent role at first, finally included and developed in the role
-[`zabbix_server_config`] (https://github.com/UdelaRInterior/zabbix_server_config)
+[`zabbix_server_config`](https://github.com/UdelaRInterior/zabbix_server_config)
 
 
 License
