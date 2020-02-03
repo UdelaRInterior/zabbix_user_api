@@ -1,38 +1,22 @@
-Role Name
+Ansible role zabbix_user_api
 =========
 
-A brief description of the role goes here.
+Proof of concept. Thought as an independent role at first, finally included and developed in the role
+[`zabbix_server_config`] (https://github.com/UdelaRInterior/zabbix_server_config)
 
-Requirements
-------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
-
-Role Variables
---------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
 
 License
 -------
 
-BSD
+(c) Universidad de la República (UdelaR), Red de Unidades Informáticas de la UdelaR en el Interior.
+
+Licenced under GPL-v3
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+[@vamgnu](https://github.com/vamgnu)
+[@santiagomr](https://github.com/santiagomr)
+[@UdelaRInterior](https://github.com/UdelaRInterior)
+https://proyectos.interior.edu.uy/
+
